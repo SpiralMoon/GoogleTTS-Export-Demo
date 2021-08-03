@@ -1,0 +1,97 @@
+<html>
+<head>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
+<body>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<div class="container">
+    <div class="row">
+        <h4>Text-to-Speech 활용</h4>
+        <p class="flow-text">원하는 내용을 입력하고 언어를 선택한 다음 '음성 변환(Speak It)'을 클릭하여 들어보세요.</p>
+    </div>
+    <div class="row">
+        <form class="col s12">
+            <div class="row">
+                <div class="input-field col s12">
+                    <textarea id="textarea1" class="materialize-textarea"></textarea>
+                    <label for="textarea1">Text to speek:</label>
+                </div>
+            </div>
+            <div class="row"></div>
+            <div class="row">
+                <div class="input-field col s6">
+                    <select>
+                        <option value="" disabled selected>Choose your option</option>
+                        <option value="1">Option 1</option>
+                        <option value="2">Option 2</option>
+                        <option value="3">Option 3</option>
+                    </select>
+                    <label>Language / locale</label>
+                </div>
+                <div class="input-field col s2">
+                    <select>
+                        <option value="" disabled selected>Choose your option</option>
+                        <option value="1">Option 1</option>
+                        <option value="2">Option 2</option>
+                        <option value="3">Option 3</option>
+                    </select>
+                    <label>Voice type</label>
+                </div>
+                <div class="input-field col s4">
+                    <select>
+                        <option value="" disabled selected>Choose your option</option>
+                        <option value="1">Option 1</option>
+                        <option value="2">Option 2</option>
+                        <option value="3">Option 3</option>
+                    </select>
+                    <label>Voice name</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s6">
+                    <select>
+                        <option value="" disabled selected>Choose your option</option>
+                        <option value="1">Option 1</option>
+                        <option value="2">Option 2</option>
+                        <option value="3">Option 3</option>
+                    </select>
+                    <label>Audio device profile</label>
+                </div>
+                <div class="input-filed col s3">
+                    <label>Speed:</label>
+                    <p class="range-field">
+                        <input type="range" id="test5" min="0.25" max="4" step="0.01"/>
+                    </p>
+                </div>
+                <div class="input-filed col s3">
+                    <label>Pitch:</label>
+                    <p class="range-field">
+                        <input type="range" id="test5" min="-20" max="20" step="0.1"/>
+                    </p>
+                </div>
+            </div>
+            <a class="waves-effect waves-light btn-large right"><i class="material-icons left">play_arrow</i>SPEAK
+                IT</a>
+        </form>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('select').material_select();
+    });
+</script>
+</body>
+</html>
