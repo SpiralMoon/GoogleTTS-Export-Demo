@@ -47,7 +47,6 @@
                         <label for="test3">ssml</label>
                     </span>
                 </div>
-
             </div>
             <div class="row">
                 <div class="input-field col s6">
@@ -113,11 +112,39 @@
         </form>
     </div>
 </div>
+<br/>
+<div class="container">
+    <div class="row">
+        <h4>JSON 파일로 한번에 다운로드</h4>
+        <p class="flow-text">원하는 내용을 JSON 배열 형태로 입력하고 '다운로드(Download)'를 클릭하여 음성 파일을 저장하세요.</p>
+    </div>
+    <div class="row card-panel">
+        <div class="input-field col s12" id="textDiv">
+            <textarea id="code" class="materialize-textarea"></textarea>
+            <label for="code"></label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="row right">
+            <div class="col">
+                <a class="waves-effect waves-light btn-large" onclick="openFileSelector()"><i
+                            class="material-icons left">file_upload</i>Import (.json)</a>
+            </div>
+            <div class="col">
+                <a class="waves-effect waves-light btn-large" onclick="speakItBulk()"><i
+                            class="material-icons left">file_download</i>Download</a>
+            </div>
+        </div>
+    </div>
+    <input class="waves-effect waves-light btn-large" type="file" id="file-selector" style="display: none"
+           onchange="handleFile(this)" accept=".json">
+</div>
 <script>
     $(document).ready(function () {
         $('select').material_select();
 
         $('#textareaSsml').val('<speak>\n\n</speak>');
+
         onSelectLangOrVoiceType();
     });
 
@@ -234,7 +261,7 @@
         const pitch = $('#pitch').val();
         const audioDeviceProfile = $('#audioDeviceProfile').val();
 
-        const res = await axios.post('/api', {
+        const res = await axios.post('/api1', {
             type: type,
             str: str,
             languageCode: languageCode,
@@ -256,13 +283,94 @@
 
         $('#audio').attr('src', "data:audio/mp3;base64," + res.data);
 
-        // var a = document.createElement("a");
-        // document.body.appendChild(a);
-        // var url = window.URL.createObjectURL(blob);
-        // a.href = url;
-        // a.download = 'tts_export.mp3';
-        // a.click();
-        // window.URL.revokeObjectURL(url);
+
+    }
+
+    function openFileSelector() {
+        $('#file-selector').click();
+    }
+
+    function handleFile(input) {
+
+        if (input.files.length === 0) {
+            return;
+        }
+
+        const fileReader = new FileReader();
+        fileReader.onload = (e) => {
+
+            let json;
+
+            try {
+                json = JSON.parse(fileReader.result);
+            } catch (e) {
+                alert('올바른 JSON 형식이 아닙니다.');
+                return;
+            }
+
+            $('#code').empty();
+
+            const lineList = JSON.stringify(json, null, '\t').split('\n');
+
+            for (let i = 0; i < lineList.length; i++) {
+                $('#code').text($('#code').val() + lineList[i] + '\n');
+            }
+        }
+        fileReader.readAsText(input.files[0]);
+
+        $('#file-selector').prop("value", "");
+        $('#file-selector').val("");
+    }
+
+    async function speakItBulk() {
+
+        const str = $('#code').val();
+        let json = null;
+
+
+        try {
+            json = JSON.parse(str);
+            console.log(json);
+        } catch (e) {
+            alert('올바른 JSON 형식이 아닙니다.');
+            return;
+        }
+
+        if (!Array.isArray(json)) {
+            json = [json];
+        }
+
+        for (let i = 0; i < json.length; i++) {
+
+            const obj = json[i];
+            const name = json[i].name;
+
+            delete obj.name;
+
+            axios
+                .post('/api2', obj)
+                .then((res) => {
+                    const byteArray = [];
+                    const decoded = atob(res.data);
+
+                    for (let i = 0; i < decoded.length; i++) {
+                        byteArray.push(decoded[i].charCodeAt());
+                    }
+
+                    const blob = new Blob([new Uint8Array(byteArray)], {type: 'application/octet-stream'});
+
+                    var a = document.createElement("a");
+                    document.body.appendChild(a);
+                    var url = window.URL.createObjectURL(blob);
+                    a.href = url;
+                    a.download = name + '.mp3';
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                })
+                .catch((e) => {
+                    console.log(e);
+                });
+        }
     }
 </script>
 </body>

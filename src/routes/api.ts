@@ -4,10 +4,9 @@ import axios from "axios";
 import {apiKey} from "../bin/config";
 
 const router = express.Router();
+const key = apiKey;
 
-router.post('/api', function (req: Request, res: Response, next: NextFunction) {
-
-    const key = apiKey;
+router.post('/api1', function (req: Request, res: Response, next: NextFunction) {
 
     const str: string = req.body.str;
     const type: 'text' | 'ssml' = req.body.type;
@@ -80,6 +79,24 @@ router.post('/api', function (req: Request, res: Response, next: NextFunction) {
             res.send(error);
         });
 
+});
+
+router.post('/api2', function (req: Request, res: Response, next: NextFunction) {
+
+    axios
+        .post('https://texttospeech.googleapis.com/v1beta1/text:synthesize', req.body, {
+            headers: {
+                'X-Goog-Api-Key': key
+            }
+        })
+        .then((response) => {
+            res.send(response.data.audioContent);
+
+        })
+        .catch(error => {
+            res.status(500);
+            res.send(error);
+        });
 });
 
 export default router;
